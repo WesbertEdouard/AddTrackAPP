@@ -23,6 +23,7 @@ def index(request):
         link = value.split("?")
         track_id = link[0]
         results = spotify.playlist_add_items(playlist_values, items=[track_id])
+        print(results)
         return render(request,'base.html',{"results":results})
     else:
       return render(request,'base.html',)
