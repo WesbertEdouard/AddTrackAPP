@@ -16,7 +16,7 @@ def index(request):
         playlist_values = "6DvAviOnHfUPE5L7qqDdH5"
         song = request.POST.get('song_id')
         spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="125fcfc2832b46eab16d304808ba603b",
-        client_secret="062770b8d48148289b1788b769ea89e0", redirect_uri="http://localhost:8888/callback",
+        client_secret="062770b8d48148289b1788b769ea89e0", redirect_uri="https://limitless-wave-3421.herokuapp.com/callback",
         scope="playlist-modify-public"))
         link = song.split("/")
         value = link[4]
