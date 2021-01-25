@@ -23,7 +23,10 @@ def index(request):
         link = value.split("?")
         track_id = link[0]
         results = spotify.playlist_add_items(playlist_values, items=[track_id])
-        print(results)
+        print(results, track_id)
         return render(request,'base.html',{"results":results})
+    elif request.method=='GET':
+        print("HELLOW WORLD")
+        return render('GET REQUEST')
     else:
       return render(request,'base.html',)
