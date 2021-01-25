@@ -3,6 +3,8 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from twilio.twiml.messaging_response import MessagingResponse
 import requests
+import os 
+import random
 
 # Create your views here.
 # id ="https://open.spotify.com/track/0u7oxreo1pM0JXa2upQVfl"
@@ -10,23 +12,36 @@ import requests
 # response = requests.post('http://example.com', data=post_data)
 # content = response.content
 
-
-def index(request):
+CLIENT_ID = os.environ.get('CLIENT_ID')
+CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+                            
+def index(request,):
+    state = random.randint(100,150)
+    
     if request.method=='POST':
-        playlist_values = "6DvAviOnHfUPE5L7qqDdH5"
+        playlist_id = "6DvAviOnHfUPE5L7qqDdH5"
         song = request.POST.get('song_id')
-        spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="125fcfc2832b46eab16d304808ba603b",
-        client_secret="062770b8d48148289b1788b769ea89e0", redirect_uri="https://accounts.spotify.com/authorize",
-        scope="playlist-modify-public"))
+        
+        code = request.POST.get('https://accounts.spotify.com/authorize')
+        spotifyGet = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
+        reponse_type=code, redirect_uri="https://limitless-wave-3421.herokuapp.com", state=state, scope="playlist-modify-public"))
+        
+        output = spotifyGet.query(code, state)
+        
+        spotifyPOST = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET, scope="playlist-modify-public"))
+        
         link = song.split("/")
         value = link[4]
         link = value.split("?")
         track_id = link[0]
-        results = spotify.playlist_add_items(playlist_values, items=[track_id])
-        print(results, track_id)
-        return render(request,'base.html',{"results":results})
-    elif request.method=='GET':
-        print("HELLOW WORLD")
-        return render('GET REQUEST')
+        
+        results = spotifyPOST.playlist_add_items(playlist_id, items=[track_id])
+        return render(request,'base.html',  {"output":output}, {"results":results})
+    
+    # elif request.method=='GET':
+    #     code = request.POST.get('https://accounts.spotify.com/authorize')
+    #     spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
+    #     reponse_type=code, redirect_uri="https://limitless-wave-3421.herokuapp.com", state=state_value, scope="playlist-modify-public"))
     else:
-      return render(request,'base.html',)
+      return render(request,'base.html')
