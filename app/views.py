@@ -24,7 +24,7 @@ def index(request,):
         
         code = request.POST.get('https://accounts.spotify.com/authorize')
         spotifyGet = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
-        reponse_type=code, redirect_uri="https://limitless-wave-3421.herokuapp.com", state=state, scope="playlist-modify-public"))
+         redirect_uri="https://limitless-wave-3421.herokuapp.com", state=state, scope="playlist-modify-public"))
         
         output = spotifyGet.query(code, state)
         
